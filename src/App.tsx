@@ -1,29 +1,16 @@
 import './App.css'
 import {Component, ReactNode} from "react";
+import CardList from "./components/card-list/card-list.component.tsx";
+import User from "./components/models/user.ts";
+import SearchBox from "./components/search-box/search-box.component.tsx";
 
-interface User {
-    id: string;
-    name: string;
-    username: string;
-    email: string;
-    address: {
-        street: string;
-        suite: string;
-        city: string;
-        zipcode: string;
-        geo: {
-            lat: string;
-            lng: string;
-        }
-    }
-}
 
 class App extends Component {
     constructor() {
-
         super();
         this.state = {
-            monsters: []
+            monsters: [],
+            searchField: ''
         }
     }
 
@@ -32,15 +19,28 @@ class App extends Component {
             .then(response => response.json())
             .then((users: User[]) => this.setState(() => {
                 return {monsters: users};
-            }, () => {
-                console.log(this.state.monsters)
             }));
     }
 
+    onSearchChange = (event) => {
+        const searchField = event.target.value.toLowerCase();
+        this.setState(() => {
+            return {searchField};
+        });
+    }
+
     render(): ReactNode {
+        const {monsters, searchField} = this.state;
+        const {onSearchChange} = this;
+        const filteredMonsters = monsters.filter((el: User) => {
+            return el.name.toLowerCase().includes(searchField)
+        })
+
         return (
             <div className='App'>
-                {this.state.monsters.map((monster: User) => <h1 key={monster.name}>{monster.name}</h1>)}
+                <SearchBox onChangeHandler={onSearchChange} placeholder='Search monsters...' className='search-box'/>
+                <CardList monsters={filteredMonsters}/>
+                {/**/}
             </div>
         )
     }

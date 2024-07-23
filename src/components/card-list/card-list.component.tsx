@@ -1,13 +1,19 @@
 import {Component} from "react";
 import User from "../models/user.ts";
+import './card-list.styles.css'
+import Card from "../card/card.component.tsx";
 
 class CardList extends Component {
 
     render() {
         const {monsters: monsters} = this.props;
         return (
-            <div>
-                {monsters.map((monster: User) => <h1 key={monster.id}>{monster.name}</h1>)}
+            <div className='card-list'>
+                {monsters.map((monster: User) => {
+                    return (
+                        <Card key={monster.id} monster={monster}/>
+                    )
+                })}
             </div>
         )
     }
